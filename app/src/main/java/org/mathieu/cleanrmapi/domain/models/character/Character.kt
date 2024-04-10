@@ -25,7 +25,7 @@ data class Character(
     val origin: Pair<String, Int>,
     val location: Pair<String, Int>,
     val avatarUrl: String,
-    val episodes: List<Episode>
+    val episodes: List<Episode>?
 )
 
 /**
