@@ -10,7 +10,9 @@ import org.mathieu.cleanrmapi.data.remote.CharacterApi
 import org.mathieu.cleanrmapi.data.remote.EpisodeAPI
 import org.mathieu.cleanrmapi.data.remote.HttpClient
 import org.mathieu.cleanrmapi.data.repositories.CharacterRepositoryImpl
+import org.mathieu.cleanrmapi.data.repositories.EpisodeRepositoryImpl
 import org.mathieu.cleanrmapi.domain.repositories.CharacterRepository
+import org.mathieu.cleanrmapi.domain.repositories.EpisodeRepository
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -52,6 +54,8 @@ val dataModule = module {
     single { provideApi<EpisodeAPI>(get()) }
 
     single { provideDataBase(get()) }
+
+    single<EpisodeRepository> { EpisodeRepositoryImpl(get()) }
 
     single<CharacterRepository> {
         val db: RMDatabase = get()
