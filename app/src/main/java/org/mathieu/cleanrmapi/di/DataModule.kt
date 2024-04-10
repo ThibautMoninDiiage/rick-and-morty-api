@@ -7,6 +7,7 @@ import okhttp3.OkHttpClient
 import org.koin.dsl.module
 import org.mathieu.cleanrmapi.data.local.RMDatabase
 import org.mathieu.cleanrmapi.data.remote.CharacterApi
+import org.mathieu.cleanrmapi.data.remote.EpisodeAPI
 import org.mathieu.cleanrmapi.data.remote.HttpClient
 import org.mathieu.cleanrmapi.data.repositories.CharacterRepositoryImpl
 import org.mathieu.cleanrmapi.domain.repositories.CharacterRepository
@@ -48,6 +49,7 @@ val dataModule = module {
     single { provideHttpClient() }
 
     single { provideApi<CharacterApi>(get()) }
+    single { provideApi<EpisodeAPI>(get()) }
 
     single { provideDataBase(get()) }
 
