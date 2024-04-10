@@ -2,6 +2,7 @@ package org.mathieu.cleanrmapi.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import org.mathieu.cleanrmapi.data.local.dao.CharacterDAO
 import org.mathieu.cleanrmapi.data.local.objects.CharacterObject
 
 @Database(

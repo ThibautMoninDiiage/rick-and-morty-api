@@ -1,5 +1,6 @@
 package org.mathieu.cleanrmapi.ui.screens.characters
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
@@ -14,6 +15,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -22,6 +25,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,7 +41,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import org.mathieu.cleanrmapi.domain.models.character.Character
 import org.mathieu.cleanrmapi.ui.core.Destination
 import org.mathieu.cleanrmapi.ui.core.composables.PreviewContent
@@ -66,13 +74,14 @@ fun CharactersScreen(navController: NavController) {
 
 }
 
-
+@SuppressLint("UnusedContentLambdaTargetStateParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 private fun CharactersContent(
     state: UIState = UIState(),
     onAction: (UIAction) -> Unit = { }
 ) = Scaffold(topBar = {
+
     Text(
         modifier = Modifier
             .background(Purple40)
@@ -85,6 +94,22 @@ private fun CharactersContent(
         fontWeight = FontWeight.Medium
     )
 }) { paddingValues ->
+
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(listState) {
+        coroutineScope.launch {
+            snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
+                .map { lastIndex -> lastIndex == listState.layoutInfo.totalItemsCount - 1 }
+                .distinctUntilChanged()
+                .collect { isAtEnd ->
+                    if (isAtEnd) {
+                        onAction(CharactersAction.LoadMoreCharacters(true))
+                    }
+                }
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -103,7 +128,7 @@ private fun CharactersContent(
                     fontWeight = FontWeight.Medium,
                     lineHeight = 36.sp
                 )
-            } ?: LazyColumn {
+            } ?: LazyColumn(state = listState) {
 
                 items(state.characters) {
                     CharacterCard(
@@ -131,8 +156,7 @@ private fun CharacterCard(
             .shadow(5.dp)
             .background(Color.White)
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp)
-        ,
+            .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -149,7 +173,6 @@ private fun CharacterCard(
         Text(text = character.name)
 
     }
-
 
 
 @Preview

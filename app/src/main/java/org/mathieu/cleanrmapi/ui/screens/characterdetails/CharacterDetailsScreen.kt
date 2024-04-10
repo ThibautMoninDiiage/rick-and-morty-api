@@ -1,5 +1,6 @@
 package org.mathieu.cleanrmapi.ui.screens.characterdetails
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
@@ -64,6 +65,7 @@ fun CharacterDetailsScreen(
 }
 
 
+@SuppressLint("UnusedContentLambdaTargetStateParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 private fun CharacterDetailsContent(
